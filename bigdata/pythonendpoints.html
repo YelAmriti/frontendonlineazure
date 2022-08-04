@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+      //  var baseurl = 'http://localhost:5000/';
+        var baseurl = 'https://yc2207bigdataapp.azurewebsites.net/';
+        function jsonreturn(){
+                fetch( baseurl + 'csvJSON' )
+                .then(antwoord=>antwoord.json())
+                .then(data=>pokemonprint(data))
+        }
+
+        function pokemonprint(informatie){
+            document.getElementById("pokemon").innerHTML = informatie["Attack"][0]
+        }
+    </script>
+
+</head>
+<body>
+    <button onclick="jsonreturn()">op naar python</button>
+    <div id="pokemon">
+
+    </div>
+</body>
+</html>
