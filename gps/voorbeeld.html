@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<form id = "MapDataForm" action="https://julirennen20220810171643.azurewebsites.net/Route/Index" method="post">
+<form id = "MapDataForm" action="http://localhost:5234/Route/Index" method="post" enctype="multipart/form-data">
     <span id="logsvf"></span>
     <div id="map" style="height:400px; width:900px;"></div>
     <input type="text" id="Distance" name="Distance" value="" style="display:none"/>
@@ -23,6 +23,8 @@
     <input type="text" id="GPSxEnd" name="GPSxEnd" value="" style="display:none"/>
     <input type="text" id="GPSyStart" name="GPSyStart" value="" style="display:none"/>
     <input type="text" id="GPSyEnd" name="GPSyEnd" value="" style="display:none"/>
+    <input type="file" id="Photo" name="Photo" value="Upload a photo" />
+    <input type="textarea" id="PhotoData" name="PhotoData" value="" style="display:none" />
     <input type="button" id="sendData" value="Send data"/>
 </form>
 
@@ -34,8 +36,9 @@ var lat1 = 0;
 var lat2 = 0;
 var lon1 = 0;
 var lon2 = 0;
+var input = document.getElementById("Photo");
 
-
+/* Code not JSON but HTML FORM need to enter base64 data into an html text area to send it through */
 $(document).ready(function(){
     L.mapbox.accessToken = 'pk.eyJ1IjoiYXJlbGIiLCJhIjoiY2w1dXhhNDI4MDQ2dzNldDIzcHBpaGVncyJ9.yKM2McNilQkocrk0q89j7w';
         
@@ -95,6 +98,35 @@ $(document).ready(function(){
 
 });    
 
+const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        console.log("I'm here");
+        fileReader.onload = () => {
+            resolve(fileReader.result);
+        };
+
+        fileReader.onerror = (error) => {
+            reject(error);
+        };
+    });
+};
+
+var ab = "";
+
+const uploadImage = async (event) => {
+    const file = event.target.files[0];
+    const base64 = await convertBase64(file);
+    ab = base64;
+    //avatar.src = base64;
+    //textArea.innerText = base64;
+};
+
+input.addEventListener("change", (e) => {
+    uploadImage(e);
+});
+
 
 
 $("#sendData").click(function(){
@@ -104,15 +136,16 @@ $("#sendData").click(function(){
     distance = km[0];
     distance = distance.replace(/km/g, '');
     distance = distance.replace(/m/g, '');
-    var mapdata = JSON.stringify({
-        Photo: "Yes",
+   /* var mapdata = JSON.stringify({
+        Photo: ab,
         Distance:distance,
         GPSxStart:lat1,
         GPSxEnd:lon1,
         GPSyStart:lon2,
         GPSyEnd:lat2,
-    });
+    });*/
 
+    $("#PhotoData").val(ab)
     $("#Distance").val(distance);
     $("#GPSxStart").val(lat1);
     $("#GPSxEnd").val(lon1);
