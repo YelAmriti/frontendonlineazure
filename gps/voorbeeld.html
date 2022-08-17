@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<form id = "MapDataForm" action="https://julirennen20220810171643.azurewebsites.net/Route/Index" method="post" enctype="multipart/form-data">
+<form id = "MapDataForm" action="http://localhost:5234/Route/Index" method="post" enctype="multipart/form-data">
     <span id="logsvf"></span>
     <div id="map" style="height:400px; width:900px;"></div>
     <input type="text" id="Distance" name="Distance" value="" style="display:none"/>
@@ -25,6 +25,7 @@
     <input type="text" id="GPSyEnd" name="GPSyEnd" value="" style="display:none"/>
     <input type="file" id="Photo" name="Photo" value="Upload a photo" />
     <input type="textarea" id="PhotoData" name="PhotoData" value="" style="display:none" />
+    <input type="textarea" id="fileName" name="fileName" value="" style="display:none" />
     <input type="button" id="sendData" value="Send data"/>
 </form>
 
@@ -102,7 +103,6 @@ const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
         fileReader.readAsDataURL(file);
-        console.log("I'm here");
         fileReader.onload = () => {
             resolve(fileReader.result);
         };
@@ -152,6 +152,11 @@ $("#sendData").click(function(){
     $("#GPSyStart").val(lon2);
     $("#GPSyEnd").val(lat2);
     $("#photo").val();
+
+    var name = document.getElementById('Photo'); 
+    var f = name.files.item(0).name;
+    f = f.replace(/.*[\/\\]/, ''); 
+    $("#fileName").val(f);
     var myForm = document.getElementById('MapDataForm');
     myForm.submit();
       
