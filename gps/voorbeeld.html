@@ -30,6 +30,8 @@
 </form>
 
 <input type="button" id="TakePhoto" value="Take Screenshot" />
+<input type="button" onclick="toonWaarJeBent()" value="toon waar je bent">
+<div id="testdata">ab</div>
 </body>
 
 <script>
@@ -38,6 +40,7 @@ var lat2 = 0;
 var lon1 = 0;
 var lon2 = 0;
 var input = document.getElementById("Photo");
+var map;
 
 /* Code not JSON but HTML FORM need to enter base64 data into an html text area to send it through */
 $(document).ready(function(){
@@ -48,7 +51,7 @@ $(document).ready(function(){
         attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     })
    
-    var map = L.map('map')
+    map = L.map('map')
     .addLayer(tiles)
     .locate({setView: true, maxZoom: 9});
 
@@ -174,4 +177,20 @@ $("#sendData").click(function(){
     });
     console.log("after");*/
 });
+var x=document.getElementById("testdata");
+function toonWaarJeBent(){
+    console.log("toon waar je bent");
+ // if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+ // } else {
+ //   x.innerHTML = "Geolocation is not supported by this browser.";
+ // }
+}
+
+function showPosition(position) {
+  x.innerHTML = "Latitude: " + position.coords.latitude +
+  "<br>Longitude: " + position.coords.longitude;
+  L.circle([position.coords.latitude, position.coords.longitude], {radius:1}).addTo(map);
+}
+
 </script>
