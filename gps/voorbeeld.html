@@ -23,16 +23,16 @@
         </div>
     </nav>
 </header>
-<body style="display:flex; flex-direction:column; min-height:100vh">
+<body style="display:flex; flex-direction:column; min-height:100vh;font-family:'Brush Script MT', cursive">
 
 
 
 <div class="w3-row">
     <div class="w3-card-4 w3-margin w3-white" style="width: 47% !important; float:left">
         <span id="logsvf"></span>
-        <div id="map" style="height:400px; width:900px;"></div>
+        <div id="map" style="height:400px; "></div>
     </div>
-    <div class="w3-card-4 w3-margin w3-white" style="float:left;">
+    <div class="w3-card-4 w3-margin w3-white" style="float:left; height:92%; width: 25%">
         <form id = "MapDataForm" action="http://localhost:5001/Route/Index" method="post" enctype="multipart/form-data">
             
             <input type="text" id="Distance" name="Distance" value="" style="display:none"/>
@@ -40,13 +40,15 @@
             <input type="text" id="GPSxEnd" name="GPSxEnd" value="" style="display:none"/>
             <input type="text" id="GPSyStart" name="GPSyStart" value="" style="display:none"/>
             <input type="text" id="GPSyEnd" name="GPSyEnd" value="" style="display:none"/>
-            <input type="file" id="Photo" name="Photo" value="Upload a photo" />
             <input type="textarea" id="PhotoData" name="PhotoData" value="" style="display:none" />
             <input type="textarea" id="fileName" name="fileName" value="" style="display:none" />
-            <input type="button" id="TakePhoto" value="Take Screenshot" />
-            <input type="button" onclick="toonWaarJeBent()" value="toon waar je bent">
+            <h2 style="margin-left:50px; margin-top:15px">Opties:</h2>
+            <input type="button" class="button" onclick="toonWaarJeBent()" value="Toon Locatie">
             <div id="testdata"></div>
-            <input type="button" id="sendData" value="Send data"/>
+            <input type="button" id="TakePhoto" class="button" value="Neem Screenshot" /> 
+            <input type="file" id="Photo" name="Photo" value="Upload a photo" />
+            <label for="Photo" class="button">Upload a file</label>
+            <input type="button" class="button" id="sendData" value="Send data"/>
         </form>
     </div>
 </div>
