@@ -46,7 +46,7 @@ footer{
   clear:both;
   margin-top: 30px;
   margin-left: 15px;
-  width: 45%;
+  width: 80%;
 }
 
 .button:hover {
@@ -62,4 +62,24 @@ input[type="file"] {
 
   input[type="file"]:focus + label {
     outline: 2px solid;  /* example focus style */
+  }
+  
+  .leftButtons{
+    float:left;
+    width:50%;
+  }
+  
+  .RouteSelection{
+    float:right;
+    width: 50% !important;
+    margin-top: 50px;
+    clear:right;
+  }
+
+  label{
+    display:block !important;
+  }
+  
+  select{
+    width: 80%;
   }
