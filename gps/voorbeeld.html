@@ -33,7 +33,7 @@
         <div id="map" style="height:400px; "></div>
     </div>
     <div class="w3-card-4 w3-margin w3-white" style="float:left; height:92%; width: 25%">
-        <form id = "MapDataForm" action="http://localhost:5001/Route/Index" method="post" enctype="multipart/form-data">
+        <form id = "MapDataForm" action="https://julirennen20220810171643.azurewebsites.net/Route/Index" method="post" enctype="multipart/form-data">
             
             <input type="text" id="Distance" name="Distance" value="" style="display:none"/>
             <input type="text" id="GPSxStart" name="GPSxStart" value="" style="display:none"/>
@@ -42,19 +42,23 @@
             <input type="text" id="GPSyEnd" name="GPSyEnd" value="" style="display:none"/>
             <input type="textarea" id="PhotoData" name="PhotoData" value="" style="display:none" />
             <input type="textarea" id="fileName" name="fileName" value="" style="display:none" />
+            <div class="RouteSelection">
+                <label for = "Routes">Select a route to display: </label>
+                <select name="Routes" id="Routes" onclick="getRoutes()"></select>
+                <button id="SelectRoute" class="button">Select this route</button>
+            </div>
             <h2 style="margin-left:50px; margin-top:15px">Opties:</h2>
-            <input type="button" class="button" onclick="toonWaarJeBent()" value="Toon Locatie">
-            <div id="testdata"></div>
-            <input type="button" id="TakePhoto" class="button" value="Neem Screenshot" /> 
-            <input type="file" id="Photo" name="Photo" value="Upload a photo" />
-            <label for="Photo" class="button">Upload a file</label>
-            <input type="button" class="button" id="sendData" value="Send data"/>
+                <div class="leftButtons">
+                <input type="button" class="button" onclick="toonWaarJeBent()" value="Toon Locatie">
+                <div id="testdata"></div>
+                <input type="button" id="TakePhoto" class="button" value="Neem Screenshot" /> 
+                <input type="file" id="Photo" name="Photo" value="Upload a photo" />
+                <label for="Photo" class="button">Upload a file</label>
+                <input type="button" class="button" id="sendData" value="Send data"/>
+            </div>
         </form>
     </div>
 </div>
-
-
-
 </body>
 
 <footer class="" style="margin-top: auto; border-top: black; border-style: groove;">
@@ -186,9 +190,11 @@ $("#sendData").click(function(){
     $("#photo").val();
 
     var name = document.getElementById('Photo'); 
-    var f = name.files.item(0).name;
-    f = f.replace(/.*[\/\\]/, ''); 
-    $("#fileName").val(f);
+    if(name != null){
+        var f = name.files.item(0).name;
+        f = f.replace(/.*[\/\\]/, ''); 
+        $("#fileName").val(f);
+    }
     var myForm = document.getElementById('MapDataForm');
     myForm.submit();
       
@@ -222,4 +228,20 @@ function showPosition(position) {
   L.circle([position.coords.latitude, position.coords.longitude], {radius:1}).addTo(map);
 }
 
+
+function getRoutes(){
+    console.log("getting routes");
+    $.ajax({
+        type: "POST",
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            url: 'https://julirennen20220810171643.azurewebsites.net/Route/getRoute',                                                        
+            success: function (response) {     
+                console.log(response);                      
+            },
+            error: function (response) {
+                alert(errorThrown);                
+            }
+    });
+    console.log("after");
+}
 </script>
