@@ -1,9 +1,65 @@
 body {
     padding: 0;
     margin: 0;
+    background: rgb(255,255,255);
+background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(255,255,255,1) 100%);
 }
 
+.navbar{
+    background: rgb(255,255,255);
+    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(255,255,255,1) 100%);
+}
 
+footer{
+    background: rgb(255,255,255);
+    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(255,255,255,1) 100%);
+}
 .easyPrintHolder .a3CssClass { 
     background-image: url(data:image/svg+xml;utf8;base64,PD9...go=);
+  }
+
+  .w3-white{
+    background: rgb(255,255,255);
+    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(255,255,255,1) 100%);
+  }
+
+  
+
+/* CSS */
+.button {
+  background-color:rgba(241,241,241,1);
+  border-radius: 100px;
+  box-shadow:  rgb(209,201,201) 0 -25px 18px -14px inset, rgb(209,201,201) 0 1px 2px, rgb(209,201,201) 0 2px 4px, rgb(209,201,201) 0 4px 8px, rgb(209,201,201) 0 8px 16px, rgb(209,201,201) 0 16px 32px;
+  color: black;
+  cursor: pointer;
+  display: block;
+  font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  clear:both;
+  margin-top: 30px;
+  margin-left: 15px;
+  width: 45%;
+}
+
+.button:hover {
+  box-shadow:  rgb(209,201,201) 0 -25px 18px -14px inset, rgb(209,201,201) 0 1px 2px, rgb(209,201,201) 0 2px 4px, rgb(209,201,201) 0 4px 8px, rgb(209,201,201) 0 8px 16px, rgb(209,201,201) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+}
+
+input[type="file"] { 
+    opacity: 0; /* make transparent */
+    z-index: -1; /* move under anything else */
+    position: absolute; /* don't let it take up space */
+  }
+
+  input[type="file"]:focus + label {
+    outline: 2px solid;  /* example focus style */
   }
