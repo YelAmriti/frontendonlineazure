@@ -45,7 +45,7 @@
             <div class="RouteSelection">
                 <label for = "Routes">Select a route to display: </label>
                 <select name="Routes" id="Routes" onclick="getRoutes()"></select>
-                <button id="SelectRoute" class="button">Select this route</button>
+                <label id="SelectRoute" class="button" onclick="getSpecificRoute()">Select this route</button>
             </div>
             <h2 style="margin-left:50px; margin-top:15px">Opties:</h2>
                 <div class="leftButtons">
@@ -74,9 +74,10 @@ var lon1 = 0;
 var lon2 = 0;
 var input = document.getElementById("Photo");
 var map;
+var alreadyCalled = false;
 
 /* Code not JSON but HTML FORM need to enter base64 data into an html text area to send it through */
-$(document).ready(function(){
+
     L.mapbox.accessToken = 'pk.eyJ1IjoiYXJlbGIiLCJhIjoiY2w1dXhhNDI4MDQ2dzNldDIzcHBpaGVncyJ9.yKM2McNilQkocrk0q89j7w';
         
     var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -89,28 +90,24 @@ $(document).ready(function(){
     .locate({setView: true, maxZoom: 9});
 
     map.on('locationfound', onLocationFound);
-                        
-    function onLocationFound(e) {
-    L.Routing.control({
+    
+
+    var routing = L.Routing.control({
         router: L.Routing.mapbox(L.mapbox.accessToken,{
                         profile : 'mapbox/walking',
                         language: 'en',
                     }),
                     waypoints: [
-                        L.latLng(e.latlng),
-                        L.latLng(e.latlng)
+                        L.latLng(57.74, 11.94),
+                        L.latLng(57.6792, 11.949)
                     ],
 
     }).addTo(map)
-    .on('waypointschanged', function (e) {
 
-        lat1 = e["waypoints"][0]["latLng"]["lat"];
-        lon1 = e["waypoints"][0]["latLng"]["lng"];
-        lat2 = e["waypoints"][1]["latLng"]["lat"];
-        lon2 = e["waypoints"][1]["latLng"]["lng"];
-        console.log("Waypoint 1 lat is " + lat1 + " latitude is: " + lon1);
-        console.log("Waypoint 2 lat is " + lat2 + " latitude is: " + lon2);
-        });
+    function onLocationFound(e) {
+        routing.spliceWaypoints(0, 1, e.latlng);
+        routing.spliceWaypoints(1, 1, e.latlng);
+
     }
 
     var a3Size = {
@@ -130,118 +127,164 @@ $(document).ready(function(){
 
        $("#TakePhoto").click(function () {
 			printer.printMap('CurrentSize', 'MyManualPrint')
-		});
+		});  
+
+    const convertBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
 
 
-});    
+    var ab = "";
 
-const convertBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
-        fileReader.onload = () => {
-            resolve(fileReader.result);
-        };
+    const uploadImage = async (event) => {
+        const file = event.target.files[0];
+        const base64 = await convertBase64(file);
+        ab = base64;
+        //avatar.src = base64;
+        //textArea.innerText = base64;
+    };
 
-        fileReader.onerror = (error) => {
-            reject(error);
-        };
+    input.addEventListener("change", (e) => {
+        uploadImage(e);
     });
-};
-
-var ab = "";
-
-const uploadImage = async (event) => {
-    const file = event.target.files[0];
-    const base64 = await convertBase64(file);
-    ab = base64;
-    //avatar.src = base64;
-    //textArea.innerText = base64;
-};
-
-input.addEventListener("change", (e) => {
-    uploadImage(e);
-});
 
 
+    $("#sendData").click(function(){
+        //Collect Data
+        var distance = $(".leaflet-routing-alt h3").html();
+        var km = distance.split(",");
+        distance = km[0];
+        distance = distance.replace(/km/g, '');
+        distance = distance.replace(/m/g, '');
+        /* var mapdata = JSON.stringify({
+            Photo: ab,
+            Distance:distance,
+            GPSxStart:lat1,
+            GPSxEnd:lon1,
+            GPSyStart:lon2,
+            GPSyEnd:lat2,
+        }); */
 
-$("#sendData").click(function(){
-    //Collect Data
-    var distance = $(".leaflet-routing-alt h3").html();
-    var km = distance.split(",");
-    distance = km[0];
-    distance = distance.replace(/km/g, '');
-    distance = distance.replace(/m/g, '');
-   /* var mapdata = JSON.stringify({
-        Photo: ab,
-        Distance:distance,
-        GPSxStart:lat1,
-        GPSxEnd:lon1,
-        GPSyStart:lon2,
-        GPSyEnd:lat2,
-    });*/
+        var routeArray = new Array();
+        routeArray = routing.getWaypoints();
+        lat1 = routeArray[0]["latLng"]["lat"];
+        lon1 = routeArray[0]["latLng"]["lng"]
+        lat2 = routeArray[1]["latLng"]["lat"];
+        lon2 = routeArray[1]["latLng"]["lng"]
+        console.log(lat2);
+        console.log(lon2);
+        console.log(lat1);
+        $("#PhotoData").val(ab)
+        $("#Distance").val(distance);
+        $("#GPSxStart").val(lat1);
+        $("#GPSxEnd").val(lon1);
+        $("#GPSyStart").val(lon2);
+        $("#GPSyEnd").val(lat2);
+        $("#photo").val();
 
-    $("#PhotoData").val(ab)
-    $("#Distance").val(distance);
-    $("#GPSxStart").val(lat1);
-    $("#GPSxEnd").val(lon1);
-    $("#GPSyStart").val(lon2);
-    $("#GPSyEnd").val(lat2);
-    $("#photo").val();
+        var name = document.getElementById('Photo'); 
+        if(name != null){
+            var f = name.files.item(0).name;
+            f = f.replace(/.*[\/\\]/, ''); 
+            $("#fileName").val(f);
+        }
+        var myForm = document.getElementById('MapDataForm');
+        myForm.submit();
+        
+        /*$.ajax({
+            type: "POST",
+                data: {data:mapdata},
+                contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                url: 'http://localhost:5234/Route/acceptRoute',                                                        
+                success: function (response) {     
+                    console.log(response);                      
+                },
+                error: function (response) {
+                    alert(errorThrown);                
+                }
+        }); */
+        console.log("after");
+    });
+   
 
-    var name = document.getElementById('Photo'); 
-    if(name != null){
-        var f = name.files.item(0).name;
-        f = f.replace(/.*[\/\\]/, ''); 
-        $("#fileName").val(f);
+    var x=document.getElementById("testdata");
+    function toonWaarJeBent(){
+        console.log("toon waar je bent");
+    // if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    // } else {
+    //   x.innerHTML = "Geolocation is not supported by this browser.";
+    // }
     }
-    var myForm = document.getElementById('MapDataForm');
-    myForm.submit();
-      
-    /*$.ajax({
-        type: "POST",
-            data: {data:mapdata},
-            contentType: "application/x-www-form-urlencoded; charset=utf-8",
-            url: 'http://localhost:5234/Route/acceptRoute',                                                        
-            success: function (response) {     
-                console.log(response);                      
-            },
-            error: function (response) {
-                alert(errorThrown);                
-            }
-    });
-    console.log("after");*/
-});
-var x=document.getElementById("testdata");
-function toonWaarJeBent(){
-    console.log("toon waar je bent");
- // if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
- // } else {
- //   x.innerHTML = "Geolocation is not supported by this browser.";
- // }
-}
 
-function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude +
-  "<br>Longitude: " + position.coords.longitude;
-  L.circle([position.coords.latitude, position.coords.longitude], {radius:1}).addTo(map);
-}
+    function showPosition(position) {
+    x.innerHTML = "Latitude: " + position.coords.latitude +
+    "<br>Longitude: " + position.coords.longitude;
+    L.circle([position.coords.latitude, position.coords.longitude], {radius:1}).addTo(map);
+    }
 
+    function getRoutes(){
+        if(alreadyCalled == false)
+        {
+            var select = document.getElementById("Routes");
+            $.ajax({
+                type: "POST",
+                    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                    url: 'https://julirennen20220810171643.azurewebsites.net/Route/getRoute',                                                        
+                    success: function (response) {     
+                        response.forEach(element=>
+                        select.add(new Option(element.name)));              
+                    },
+                    error: function (response) {
+                        alert(errorThrown);  
+                        routing.setWaypoints()              
+                    }
+            });
+            console.log("after");
+            alreadyCalled = true;
+        }
+    }
 
-function getRoutes(){
-    console.log("getting routes");
-    $.ajax({
-        type: "POST",
-            contentType: "application/x-www-form-urlencoded; charset=utf-8",
-            url: 'https://julirennen20220810171643.azurewebsites.net/Route/getRoute',                                                        
-            success: function (response) {     
-                console.log(response);                      
-            },
-            error: function (response) {
-                alert(errorThrown);                
-            }
-    });
-    console.log("after");
-}
+    function getSpecificRoute(){
+        var name = document.getElementById("Routes");
+        var name = name.options[name.selectedIndex].text;
+        var sendName = JSON.stringify({
+            name:name,
+        });
+
+        $.ajax({
+            type: "POST",
+                data: {data:name},
+                contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                url: 'https://julirennen20220810171643.azurewebsites.net/Route/GetSpecificRoute',                                                        
+                success: function (response) {     
+                    console.log(response);   
+                    var lat1 = new L.latLng(response.gpSxStart, response.gpSxEnd);
+                    var lat2 = new L.latLng(response.gpSyEnd, response.gpSyStart);
+                    
+                    //routing.setWaypoints(lat1, lat2);
+                    routing.spliceWaypoints(0, 1, lat1);
+                    routing.spliceWaypoints(1, 1, lat2);
+
+                    //console.log(routing.getWaypoints());
+                },
+                error: function (response) {
+                    alert(errorThrown);                
+                }
+        });
+        console.log("after"); 
+        
+    }
+console.log("im run automatically");
+
 </script>
