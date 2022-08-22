@@ -35,6 +35,7 @@
     <div class="w3-card-4 w3-margin w3-white" style="float:left; height:92%; width: 25%">
         <form id = "MapDataForm" action="https://julirennen20220810171643.azurewebsites.net/Route/Index" method="post" enctype="multipart/form-data">
             
+            <input type="text" id="RouteName" name="RouteName" value="" style="display:none"/>
             <input type="text" id="Distance" name="Distance" value="" style="display:none"/>
             <input type="text" id="GPSxStart" name="GPSxStart" value="" style="display:none"/>
             <input type="text" id="GPSxEnd" name="GPSxEnd" value="" style="display:none"/>
@@ -174,16 +175,19 @@ var alreadyCalled = false;
             GPSyStart:lon2,
             GPSyEnd:lat2,
         }); */
-
+        var selectname = "";
         var routeArray = new Array();
         routeArray = routing.getWaypoints();
         lat1 = routeArray[0]["latLng"]["lat"];
         lon1 = routeArray[0]["latLng"]["lng"]
         lat2 = routeArray[1]["latLng"]["lat"];
         lon2 = routeArray[1]["latLng"]["lng"]
-        console.log(lat2);
-        console.log(lon2);
-        console.log(lat1);
+        var select = document.getElementById("Routes");
+        console.log(select);
+        if(select.options.length > 1){
+            selectname = select.options[select.selectedIndex].text
+        }
+
         $("#PhotoData").val(ab)
         $("#Distance").val(distance);
         $("#GPSxStart").val(lat1);
@@ -191,6 +195,7 @@ var alreadyCalled = false;
         $("#GPSyStart").val(lon2);
         $("#GPSyEnd").val(lat2);
         $("#photo").val();
+        $("#RouteName").val(selectname);
 
         var name = document.getElementById('Photo'); 
         if(name != null){
