@@ -32,7 +32,7 @@
         <span id="logsvf"></span>
         <div id="map" style="height:400px; "></div>
     </div>
-    <div class="w3-card-4 w3-margin w3-white" style="float:left; height:92%; width: 25%">
+    <div class="w3-card-4 w3-margin w3-white" style="float:left; height:92%; width: 35%">
         <form id = "MapDataForm" action="https://julirennen20220810171643.azurewebsites.net/Route/Index" method="post" enctype="multipart/form-data">
             
             <input type="text" id="RouteName" name="RouteName" value="" style="display:none"/>
@@ -198,6 +198,9 @@ var alreadyCalled = false;
         $("#RouteName").val(selectname);
 
         var name = document.getElementById('Photo'); 
+        if(name.files.item(0) == null){
+            alert("Please upload a photo");
+        }
         if(name != null){
             var f = name.files.item(0).name;
             f = f.replace(/.*[\/\\]/, ''); 
@@ -271,7 +274,7 @@ var alreadyCalled = false;
             type: "POST",
                 data: {data:name},
                 contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                url: 'https://julirennen20220810171643.azurewebsites.net/Route/GetSpecificRoute',                                                        
+                url: 'https://julirennen20220810171643.azurewebsites.net/Route/getSpecificRoute',                                              
                 success: function (response) {     
                     console.log(response);   
                     var lat1 = new L.latLng(response.gpSxStart, response.gpSxEnd);
